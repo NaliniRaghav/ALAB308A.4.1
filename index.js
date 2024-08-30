@@ -69,7 +69,7 @@ async function handleBreedSelect() {
     `https://api.thecatapi.com/v1/images/search?limit=10&breed_ids=${breedSelect.value}`,
     {
       headers: { "x-api-key": API_KEY },
-    },
+    }
   );
 
   const breedsData = await res.json();
@@ -85,7 +85,7 @@ async function handleBreedSelect() {
     const element = Carousel.createCarouselItem(
       item.url,
       item.breeds[0].name,
-      item.id,
+      item.id
     );
     Carousel.appendCarousel(element);
   });
@@ -134,7 +134,7 @@ async function axiosHandleBreedSelect() {
     `https://api.thecatapi.com/v1/images/search?limit=10&breed_ids=${breedSelect.value}`,
     {
       onDownloadProgress: updateProgress,
-    },
+    }
   );
 
   // parsed json data
@@ -151,7 +151,7 @@ async function axiosHandleBreedSelect() {
     const element = Carousel.createCarouselItem(
       item.url,
       item.breeds[0].name,
-      item.id,
+      item.id
     );
     Carousel.appendCarousel(element);
   });
@@ -197,7 +197,7 @@ axios.interceptors.response.use(
     document.body.style.cursor = "";
 
     console.log(
-      `Request took ${response.config.metadata.durationInMS} milliseconds.`,
+      `Request took ${response.config.metadata.durationInMS} milliseconds.`
     );
     return response;
   },
@@ -207,10 +207,10 @@ axios.interceptors.response.use(
       error.config.metadata.endTime - error.config.metadata.startTime;
 
     console.log(
-      `Request took ${error.config.metadata.durationInMS} milliseconds.`,
+      `Request took ${error.config.metadata.durationInMS} milliseconds.`
     );
     throw error;
-  },
+  }
 );
 
 /**
@@ -254,42 +254,46 @@ function updateProgress(progressEvent) {
  * - You can call this function by clicking on the heart at the top right of any image.
  */
 export async function favourite(imgId) {
-    console.log(imgId);
-    
-//   axios
-//     .get("https://api.thecatapi.com/v1/favourites")
-//     .then((res) =>
-//       res.data.forEach((i) =>
-//         axios.delete(`https://api.thecatapi.com/v1/favourites/${i.id}`),
-//       ),
-//     );
+  console.log(imgId);
 
-//   GET all favourites
-    axios.get("https://api.thecatapi.com/v1/favourites").then((res) => {
-      console.log("FAVS => ", res.data);
+  //   axios
+  //     .get("https://api.thecatapi.com/v1/favourites")
+  //     .then((res) =>
+  //       res.data.forEach((i) =>
+  //         axios.delete(`https://api.thecatapi.com/v1/favourites/${i.id}`),
+  //       ),
+  //     );
 
-      let deleted = false;
+  //   GET all favourites
+  axios.get("https://api.thecatapi.com/v1/favourites").then((res) => {
+    console.log("FAVS => ", res.data);
 
-      // loop over the items
-      res.data.forEach((item) => {
-        // if the image is favourited then delete
-        if (item.image_id === imgId) {
-            console.log(item.image_id, imgId);
-            
-          // delete
-          deleted = true;
-          axios.delete(`https://api.thecatapi.com/v1/favourites/${item.id}`)
-          .then(res => console.log(res))
-        }
-      });
+    let deleted = false;
 
-      if (!deleted) {
-        // add
+    // loop over the items
+    res.data.forEach((item) => {
+      // if the image is favourited then delete
+      if (item.image_id === imgId) {
+        console.log(item.image_id, imgId);
+
+        // delete
+        deleted = true;
         axios
-          .post("https://api.thecatapi.com/v1/favourites", { image_id: imgId, sub_id: 'abe' })
-          .then((res) => console.log(res.data));
+          .delete(`https://api.thecatapi.com/v1/favourites/${item.id}`)
+          .then((res) => console.log(res));
       }
     });
+
+    if (!deleted) {
+      // add
+      axios
+        .post("https://api.thecatapi.com/v1/favourites", {
+          image_id: imgId,
+          sub_id: "abe",
+        })
+        .then((res) => console.log(res.data));
+    }
+  });
 }
 
 /**
@@ -302,35 +306,25 @@ export async function favourite(imgId) {
  *    repeat yourself in this section.
  */
 
-
-getFavouritesBtn.addEventListener('click', getFavourites);
+getFavouritesBtn.addEventListener("click", getFavourites);
 
 function getFavourites() {
-    axios.get("https://api.thecatapi.com/v1/favourites")
-    .then(res => {
-        console.log('All FAVS::: ', res.data);
-        Carousel.clear();
+  axios.get("https://api.thecatapi.com/v1/favourites").then((res) => {
+    console.log("All FAVS::: ", res.data);
+    Carousel.clear();
 
-        res.data.forEach(item => {
-            const element = Carousel.createCarouselItem(item.image.url, item.image_id, item.image.id)
+    res.data.forEach((item) => {
+      const element = Carousel.createCarouselItem(
+        item.image.url,
+        item.image_id,
+        item.image.id
+      );
 
-            Carousel.appendCarousel(element);
-        });
-    })
-    Carousel.start();
+      Carousel.appendCarousel(element);
+    });
+  });
+  Carousel.start();
 }
-
-React
-
-Reply
-
-
-
-
-
-
-
-
 
 
 /**
